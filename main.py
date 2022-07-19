@@ -48,6 +48,13 @@ def checkPosition(table, xPos, yPos, value):
     # Else return true
     return True
 
+def findUnfilledtile(table):
+    for y in range(9):
+        for x in range(9):
+            if (table[y][x] == 0):
+                return x, y
+    return -1, -1
+
 def fillTable(table):
     tableCopy = table.copy()
     for rowIndex, row in enumerate(tableCopy):
@@ -65,5 +72,21 @@ def fillTable(table):
                 if (rowIndex == 8 and columnIndex == 8):
                     return True
 
-fillTable(table)
+def solveSudoku(table):
+    x, y = findUnfilledtile(table)
+    
+    if y == -1: 
+        return True
+    
+    for value in range(1, 10):
+        if checkPosition(table, x, y, value):
+            table[y][x] = value
+            if solveSudoku(table):
+                return True
+            table[y][x] = 0
+    return False
+        
+
+# fillTable(table)
+solveSudoku(table)
 printTable(table)
