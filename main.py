@@ -4,17 +4,6 @@ import random
 import copy
 
 table = [[0]*9 for i in range(9)]
-# table = [
-# [0, 0, 5, 6, 0, 2, 0, 0, 0],
-# [7, 0, 0, 8, 1, 0, 4, 0, 0],
-# [0, 0, 0, 0, 0, 0, 5, 6, 0],
-# [0, 4, 9, 0, 0, 0, 0, 0, 0],
-# [8, 0, 0, 0, 0, 0, 0, 0, 7],
-# [0, 0, 0, 0, 5, 1, 0, 0, 0],
-# [0, 0, 0, 9, 4, 0, 8, 0, 2],
-# [3, 0, 6, 1, 0, 0, 0, 0, 0],
-# [0, 0, 0, 0, 0, 0, 0, 0, 0]
-# ]
 
 def printTable(table):
     for rowIndex, row in enumerate(table):
@@ -64,34 +53,21 @@ def removeRandomTiles(table, numberToRemove):
         y = random.randint(0, 8)
         table[y][x] = 0
 
-def fillTable(table):
-    tableCopy = table.copy()
-    for rowIndex, row in enumerate(tableCopy):
-        for columnIndex, tile in enumerate(row):
-            if (tile == 0):
-                for value in range(1,10):
-                    if (checkPosition(tableCopy, columnIndex, rowIndex, value)):
-                        tableCopy[rowIndex][columnIndex] = value
-                        if fillTable(tableCopy):
-                            return True
-                        tableCopy[rowIndex][columnIndex] = 0
-                if tableCopy[rowIndex][columnIndex] == 0:
-                    return False
-            else:
-                if (rowIndex == 8 and columnIndex == 8):
-                    return True
-
 def solveSudoku(table):
+    # Find the "first" tile with a value of 0
     x, y = findUnfilledtile(table)
+    # List of numbers that haven't been used by the solver for this itteration of this tile
     unusedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     
     if y == -1: 
         return True
     
     while len(unusedNumbers) != 0:
+        # Grab one of the unused numbers randomly
         value = unusedNumbers[random.randint(0, len(unusedNumbers) - 1)]
         unusedNumbers.remove(value)
-
+        
+        # Check if it can be inserted on the selected tile
         if checkPosition(table, x, y, value):
             table[y][x] = value
             if solveSudoku(table):
@@ -105,6 +81,7 @@ solvable = False
 
 while (solvable == False):
     table = copy.deepcopy(completeSudoku)
+    # 32 tiles shown after removal
     removeRandomTiles(table, 49)
     solvable = solveSudoku(copy.deepcopy(table))
 
